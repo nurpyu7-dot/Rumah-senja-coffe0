@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Senja & Seduh — Artisan Coffee & Pastry</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cormorant Garamond (Serif Elegan) & Plus Jakarta Sans (Sans-serif Bersih) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Konfigurasi Palet Warna & Tipografi Custom Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: {
+              50: '#FDFBF7',
+              100: '#F7F2E9',
+              200: '#EDE3D3',
+              300: '#DFD0B8',
+            },
+            coffee: {
+              500: '#7C5841',
+              700: '#4E3424',
+              800: '#3A2518',
+              900: '#26170E',
+            },
+            sage: {
+              100: '#E8EDE7',
+              500: '#6B8269',
+              700: '#4B5E49',
+            },
+            gold: {
+              400: '#D4A853',
+              500: '#B88934',
+              600: '#9A6F23',
+            },
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 10px 30px -10px rgba(38, 23, 14, 0.08)',
+            card: '0 4px 20px -2px rgba(78, 52, 36, 0.06)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Styling tambahan halus untuk scrollbar & animasi */
+    body {
+      background-color: #FDFBF7;
+      color: #26170E;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-serif-display {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F7F2E9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #DFD0B8;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7C5841;
+    }
+    /* Pattern struk bergerigi */
+    .receipt-edge {
+      background-image: radial-gradient(circle at 10px 0, transparent 6px, #FDFBF7 6.5px);
+      background-size: 20px 12px;
+      background-repeat: repeat-x;
+    }
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .animate-modal {
+      animation: fadeInScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-gold-400/30 selection:text-coffee-900 overflow-x-hidden">
+
+  <!-- ==================== TOAST NOTIFICATION ==================== -->
+  <div id="toast-container" class="fixed top-20 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <header class="sticky top-0 z-40 bg-cream-50/90 backdrop-blur-md border-b border-cream-200 transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-coffee-800 text-cream-50 flex items-center justify-center shadow-sm group-hover:bg-gold-500 transition-colors">
+          <i data-lucide="coffee" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span id="nav-cafe-name" class="font-serif-display text-2xl font-bold tracking-tight text-coffee-900 block leading-none">
+            Senja & Seduh
+          </span>
+          <span class="text-[11px] uppercase tracking-[0.2em] text-coffee-500 font-medium">
+            Artisan Roastery
+          </span>
+        </div>
+      </a>
+
+      <!-- Navigation Links (Desktop) -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-coffee-700">
+        <a href="#beranda" class="hover:text-gold-600 transition-colors">Beranda</a>
+        <a href="#katalog-menu" class="hover:text-gold-600 transition-colors">Menu Kami</a>
+        <a href="#tentang-kami" class="hover:text-gold-600 transition-colors">Suasana & Lokasi</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Indikator Mode Pemilik Aktif (Tampil jika sedang login) -->
+        <button
+          id="admin-badge-btn"
+          onclick="openAdminDashboard()"
+          class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full bg-sage-100 text-sage-700 border border-sage-500/30 text-xs font-semibold hover:bg-sage-500 hover:text-white transition-all"
+          title="Buka Panel Pemilik"
+        >
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Mode Pemilik</span>
+        </button>
+
+        <!-- Tombol Keranjang Belanja -->
+        <button
+          onclick="toggleCartDrawer(true)"
+          class="relative flex items-center gap-2 px-4 py-2.5 rounded-full bg-coffee-800 text-cream-50 hover:bg-coffee-700 active:scale-95 transition-all shadow-sm"
+          aria-label="Buka Keranjang"
+        >
+          <i data-lucide="shopping-bag" class="w-4 h-4 text-gold-400"></i>
+          <span class="text-xs sm:text-sm font-medium hidden sm:inline">Pesanan</span>
+          <span
+            id="cart-count-badge"
+            class="min-w-[20px] h-5 px-1.5 rounded-full bg-gold-500 text-coffee-900 text-xs font-bold flex items-center justify-center"
+          >
+            0
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="beranda" class="relative overflow-hidden pt-8 pb-16 sm:pt-14 sm:pb-24">
+    <!-- Dekorasi Latar Halus -->
+    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-sage-100/70 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/2 -left-24 w-80 h-80 rounded-full bg-gold-400/15 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <!-- Kolom Teks Hero -->
+        <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cream-100 border border-cream-300 text-coffee-700 text-xs font-medium tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-sage-500 animate-pulse"></span>
+            <span id="hero-open-status">Buka Hari Ini • 08.00 – 22.00 WIB</span>
+          </div>
+
+          <h1 class="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-bold text-coffee-900 leading-[1.12]">
+            Kehangatan di Setiap <span class="italic font-semibold text-coffee-500">Seduhan</span> &amp; Cerita.
+          </h1>
+
+          <p id="hero-tagline" class="text-coffee-700/90 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
+            Menyajikan biji kopi pilihan nusantara yang disangrai perlahan, dipadukan dengan pastri hangat buatan tangan dalam ruang yang tenang dan estetik.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+            <a
+              href="#katalog-menu"
+              class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-coffee-800 text-cream-50 font-medium text-sm hover:bg-coffee-700 transition-all shadow-soft flex items-center justify-center gap-2 group"
+            >
+              <span>Pesan Sekarang</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-gold-400 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+            <a
+              href="#tentang-kami"
+              class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-cream-100 text-coffee-800 border border-cream-300 font-medium text-sm hover:bg-cream-200 transition-all flex items-center justify-center gap-2"
+            >
+              <i data-lucide="map-pin" class="w-4 h-4 text-coffee-500"></i>
+              <span>Kunjungi Kafe</span>
+            </a>
+          </div>
+
+          <!-- Statistik Singkat -->
+          <div class="pt-6 grid grid-cols-3 gap-4 border-t border-cream-200 max-w-md mx-auto lg:mx-0">
+            <div>
+              <p class="font-serif-display text-2xl font-bold text-coffee-900">100%</p>
+              <p class="text-xs text-coffee-500">Arabika Nusantara</p>
+            </div>
+            <div>
+              <p class="font-serif-display text-2xl font-bold text-coffee-900">Fresh</p>
+              <p class="text-xs text-coffee-500">Dipanggang Tiap Pagi</p>
+            </div>
+            <div>
+              <p class="font-serif-display text-2xl font-bold text-coffee-900">4.9 ★</p>
+              <p class="text-xs text-coffee-500">Ulasan Pelanggan</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Visual Hero Estetik -->
+        <div class="lg:col-span-6 relative">
+          <div class="relative rounded-3xl overflow-hidden shadow-soft border-4 border-white aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] bg-cream-200">
+            <img
+              src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=80"
+              alt="Secangkir Kopi Latte Art Estetik di Meja Kayu"
+              onerror="this.src='https://placehold.co/800x600/EDE3D3/4E3424?text=Senja+%26+Seduh+Coffee'"
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-coffee-900/40 via-transparent to-transparent"></div>
+          </div>
+
+          <!-- Floating Card Rekomendasi Barista -->
+          <div class="hidden sm:flex items-center gap-3.5 bg-cream-50/95 backdrop-blur-md p-4 rounded-2xl shadow-soft border border-cream-200 absolute -bottom-6 -left-6 max-w-xs">
+            <div class="w-12 h-12 rounded-xl bg-sage-100 text-sage-700 flex items-center justify-center shrink-0">
+              <i data-lucide="sparkles" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <p class="text-[11px] uppercase tracking-wider text-gold-600 font-semibold">Signature Menu</p>
+              <p class="font-serif-display text-lg font-bold text-coffee-900 leading-tight">Kopi Susu Gula Aren Senja</p>
+              <p class="text-xs text-coffee-500">Creamy, harum karamel alami</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== KATALOG MENU INTERAKTIF ==================== -->
+  <section id="katalog-menu" class="py-16 sm:py-20 bg-cream-100/70 border-y border-cream-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header Section -->
+      <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+        <span class="text-xs uppercase tracking-[0.25em] text-gold-600 font-semibold">Kurasi Rasa</span>
+        <h2 class="font-serif-display text-3xl sm:text-4xl lg:text-5xl font-bold text-coffee-900">
+          Menu Pilihan Hari Ini
+        </h2>
+        <p class="text-sm sm:text-base text-coffee-700/80">
+          Pilih hidangan favorit Anda, sesuaikan jumlahnya, dan pesan langsung dari meja atau untuk dibawa pulang.
+        </p>
+      </div>
+
+      <!-- Filter Kategori & Pencarian -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
+        <!-- Tab Kategori -->
+        <div id="category-tabs" class="flex flex-wrap items-center justify-center gap-2">
+          <!-- Di-render secara dinamis oleh JS -->
+        </div>
+
+        <!-- Kotak Pencarian Cepat -->
+        <div class="relative w-full md:w-64">
+          <i data-lucide="search" class="w-4 h-4 text-coffee-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input
+            type="text"
+            id="menu-search-input"
+            oninput="handleSearchMenu(this.value)"
+            placeholder="Cari kopi atau pastri..."
+            class="w-full pl-10 pr-4 py-2.5 rounded-full bg-cream-50 border border-cream-300 text-sm text-coffee-900 placeholder:text-coffee-500/60 focus:outline-none focus:border-gold-500 transition-colors"
+          />
+        </div>
+      </div>
+
+      <!-- Grid Daftar Menu -->
+      <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        <!-- Kartu menu di-render melalui JavaScript -->
+      </div>
+
+      <!-- Empty State jika pencarian tidak ditemukan -->
+      <div id="menu-empty-state" class="hidden text-center py-14 bg-cream-50 rounded-3xl border border-cream-200">
+        <div class="w-14 h-14 rounded-full bg-cream-100 text-coffee-500 flex items-center justify-center mx-auto mb-3">
+          <i data-lucide="cup-soda" class="w-7 h-7"></i>
+        </div>
+        <h3 class="font-serif-display text-2xl font-bold text-coffee-900">Menu Tidak Ditemukan</h3>
+        <p class="text-sm text-coffee-500 mt-1">Coba kata kunci lain atau pilih kategori "Semua".</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== INFORMASI KAFE & SUASANA ==================== -->
+  <section id="tentang-kami" class="py-16 sm:py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <!-- Kolase Suasana Kafe -->
+        <div class="lg:col-span-6 grid grid-cols-2 gap-4">
+          <div class="space-y-4">
+            <img
+              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=600&q=80"
+              alt="Interior Kafe Estetik Hangat"
+              onerror="this.src='https://placehold.co/400x500/EDE3D3/4E3424?text=Interior+Kafe'"
+              class="rounded-2xl object-cover w-full h-56 sm:h-64 shadow-card"
+            />
+            <div class="p-5 rounded-2xl bg-sage-100/80 border border-sage-500/20">
+              <i data-lucide="leaf" class="w-6 h-6 text-sage-700 mb-2"></i>
+              <h4 class="font-serif-display text-xl font-bold text-coffee-900">Ruang Tenang &amp; Hijau</h4>
+              <p class="text-xs text-coffee-700/80 mt-1 leading-relaxed">
+                Dilengkapi sudut baca, Wi-Fi cepat, dan tanaman hias alami untuk bekerja maupun bersantai.
+              </p>
+            </div>
+          </div>
+          <div class="space-y-4 pt-6">
+            <div class="p-5 rounded-2xl bg-coffee-800 text-cream-50">
+              <i data-lucide="croissant" class="w-6 h-6 text-gold-400 mb-2"></i>
+              <h4 class="font-serif-display text-xl font-bold">Artisan Bakery</h4>
+              <p class="text-xs text-cream-200/80 mt-1 leading-relaxed">
+                Croissant mentega Prancis dan kue pendamping kopi yang dipanggang segar setiap pagi.
+              </p>
+            </div>
+            <img
+              src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80"
+              alt="Proses Seduh Manual Brew"
+              onerror="this.src='https://placehold.co/400x500/DFD0B8/26170E?text=Manual+Brew'"
+              class="rounded-2xl object-cover w-full h-56 sm:h-64 shadow-card"
+            />
+          </div>
+        </div>
+
+        <!-- Detail Informasi Lokasi & Jam Buka -->
+        <div class="lg:col-span-6 space-y-6">
+          <span class="text-xs uppercase tracking-[0.25em] text-gold-600 font-semibold">Singgah Sejenak</span>
+          <h2 class="font-serif-display text-3xl sm:text-4xl font-bold text-coffee-900 leading-tight">
+            Temukan Sudut Favoritmu di <span id="about-cafe-name">Senja &amp; Seduh</span>
+          </h2>
+          <p class="text-coffee-700/85 text-sm sm:text-base leading-relaxed">
+            Kami percaya secangkir kopi yang nikmat lahir dari ketelitian proses dan ketulusan pelayanan. Datanglah untuk menikmati aroma kopi segar, musik akustik lembut, dan suasana yang memeluk hangat.
+          </p>
+
+          <div class="space-y-4 pt-2">
+            <!-- Alamat -->
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-cream-100/80 border border-cream-200">
+              <div class="w-10 h-10 rounded-xl bg-cream-50 text-coffee-700 flex items-center justify-center shrink-0 shadow-sm">
+                <i data-lucide="map-pin" class="w-5 h-5 text-gold-600"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-coffee-900">Alamat Kafe</h4>
+                <p id="info-cafe-address" class="text-sm text-coffee-700/80 mt-0.5">
+                  Jl. Melawai Raya No. 28, Kebayoran Baru, Jakarta Selatan
+                </p>
+              </div>
+            </div>
+
+            <!-- Jam Buka -->
+            <div class="flex items-start gap-4 p-4 rounded-2xl bg-cream-100/80 border border-cream-200">
+              <div class="w-10 h-10 rounded-xl bg-cream-50 text-coffee-700 flex items-center justify-center shrink-0 shadow-sm">
+                <i data-lucide="clock" class="w-5 h-5 text-sage-700"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-semibold text-coffee-900">Jam Operasional</h4>
+                <p id="info-cafe-hours" class="text-sm text-coffee-700/80 mt-0.5">
+                  Senin – Minggu: 08.00 – 22.00 WIB
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-coffee-900 text-cream-200 py-12 border-t border-coffee-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-coffee-800">
+        <div class="text-center md:text-left">
+          <div class="flex items-center justify-center md:justify-start gap-2.5">
+            <i data-lucide="coffee" class="w-5 h-5 text-gold-400"></i>
+            <span id="footer-cafe-name" class="font-serif-display text-2xl font-bold text-cream-50">
+              Senja &amp; Seduh
+            </span>
+          </div>
+          <p class="text-xs text-cream-300/70 mt-1.5">
+            Diseduh dengan sepenuh hati • Kopi Artisan &amp; Pastri Segar
+          </p>
+        </div>
+
+        <div class="flex items-center gap-6 text-xs text-cream-300/80">
+          <a href="#beranda" class="hover:text-gold-400 transition-colors">Beranda</a>
+          <a href="#katalog-menu" class="hover:text-gold-400 transition-colors">Menu</a>
+          <a href="#tentang-kami" class="hover:text-gold-400 transition-colors">Lokasi</a>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-cream-300/60">
+        <p>&copy; <span id="current-year"></span> <span id="footer-copy-name">Senja &amp; Seduh</span>. Hak Cipta Dilindungi.</p>
+
+        <!-- Tombol Khusus Pemilik / Admin -->
+        <button
+          onclick="handleAdminAccessClick()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-coffee-800/80 hover:bg-coffee-800 text-cream-300/80 hover:text-gold-400 border border-coffee-700/60 transition-all text-xs"
+        >
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Admin / Pemilik</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== DRAWER KERANJANG BELANJA & CHECKOUT ==================== -->
+  <div id="cart-drawer-backdrop" class="fixed inset-0 z-50 hidden">
+    <!-- Overlay gelap -->
+    <div
+      onclick="toggleCartDrawer(false)"
+      class="absolute inset-0 bg-coffee-900/50 backdrop-blur-xs transition-opacity"
+    ></div>
+
+    <!-- Panel Keranjang -->
+    <aside class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-cream-50 shadow-2xl flex flex-col border-l border-cream-200 animate-modal">
+      <!-- Header Drawer -->
+      <div class="px-6 py-5 bg-cream-100 border-b border-cream-200 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-coffee-700"></i>
+          <h3 class="font-serif-display text-2xl font-bold text-coffee-900">Keranjang Pesanan</h3>
+        </div>
+        <button
+          onclick="toggleCartDrawer(false)"
+          class="p-2 rounded-full hover:bg-cream-200 text-coffee-700 transition-colors"
+          aria-label="Tutup Keranjang"
+        >
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Konten Keranjang (Scrollable) -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        <!-- Daftar Item di Keranjang -->
+        <div id="cart-items-container" class="space-y-3">
+          <!-- Item keranjang di-render JS -->
+        </div>
+
+        <!-- Form Detail Pemesanan (Muncul jika keranjang tidak kosong) -->
+        <form id="checkout-form" onsubmit="handleCheckoutSubmit(event)" class="hidden space-y-4 pt-4 border-t border-cream-200">
+          <h4 class="font-serif-display text-xl font-bold text-coffee-900">Detail Pemesan</h4>
+
+          <!-- Tipe Pesanan: Dine-in / Takeaway -->
+          <div>
+            <label class="block text-xs font-semibold text-coffee-700 mb-1.5">Tipe Pesanan</label>
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="cursor-pointer">
+                <input type="radio" name="orderType" value="Dine-in" checked class="peer sr-only" onchange="toggleTableField(true)" />
+                <div class="py-2.5 px-3 rounded-xl border border-cream-300 bg-white text-center text-xs font-semibold text-coffee-700 peer-checked:bg-coffee-800 peer-checked:text-cream-50 peer-checked:border-coffee-800 transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="utensils" class="w-3.5 h-3.5"></i>
+                  <span>Makan di Tempat</span>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="orderType" value="Takeaway" class="peer sr-only" onchange="toggleTableField(false)" />
+                <div class="py-2.5 px-3 rounded-xl border border-cream-300 bg-white text-center text-xs font-semibold text-coffee-700 peer-checked:bg-coffee-800 peer-checked:text-cream-50 peer-checked:border-coffee-800 transition-all flex items-center justify-center gap-1.5">
+                  <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                  <span>Bawa Pulang</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Nama Pemesan -->
+          <div>
+            <label for="customer-name" class="block text-xs font-semibold text-coffee-700 mb-1">Nama Pemesan *</label>
+            <input
+              type="text"
+              id="customer-name"
+              required
+              placeholder="Contoh: Nadya Putri"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 text-sm text-coffee-900 focus:outline-none focus:border-gold-500"
+            />
+          </div>
+
+          <!-- Nomor Meja / Catatan -->
+          <div>
+            <label for="customer-note" id="customer-note-label" class="block text-xs font-semibold text-coffee-700 mb-1">
+              Nomor Meja &amp; Catatan
+            </label>
+            <input
+              type="text"
+              id="customer-note"
+              placeholder="Contoh: Meja 04 • Es sedikit"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 text-sm text-coffee-900 focus:outline-none focus:border-gold-500"
+            />
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer Drawer (Ringkasan Harga & Tombol Checkout) -->
+      <div id="cart-footer" class="hidden p-6 bg-cream-100 border-t border-cream-200 space-y-4">
+        <div class="space-y-1.5 text-sm">
+          <div class="flex justify-between text-coffee-700">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-coffee-700">
+            <span>Pajak Resto (10%)</span>
+            <span id="cart-tax">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-base font-bold text-coffee-900 pt-2 border-t border-cream-300">
+            <span>Total Pembayaran</span>
+            <span id="cart-total" class="text-gold-600">Rp 0</span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          form="checkout-form"
+          class="w-full py-3.5 px-6 rounded-full bg-coffee-800 hover:bg-coffee-700 text-cream-50 font-semibold text-sm shadow-soft transition-all flex items-center justify-center gap-2 active:scale-98"
+        >
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-gold-400"></i>
+          <span>Checkout / Pesan Sekarang</span>
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ==================== MODAL STRUK PESANAN ESTETIK ==================== -->
+  <div id="receipt-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-coffee-900/60 backdrop-blur-xs">
+    <div class="bg-cream-50 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-cream-200 animate-modal max-h-[90vh] flex flex-col">
+      <!-- Header Struk -->
+      <div class="bg-coffee-800 text-cream-50 px-6 py-5 text-center relative">
+        <div class="w-12 h-12 rounded-full bg-sage-500 text-white flex items-center justify-center mx-auto mb-2 shadow-md">
+          <i data-lucide="check" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-serif-display text-2xl font-bold">Pesanan Diterima!</h3>
+        <p class="text-xs text-cream-200/80 mt-0.5">Terima kasih telah memesan di <span id="receipt-cafe-title">Senja &amp; Seduh</span></p>
+      </div>
+
+      <!-- Isi Struk -->
+      <div class="p-6 overflow-y-auto space-y-4 text-sm">
+        <div class="bg-cream-100/80 p-4 rounded-2xl border border-cream-200 space-y-1.5 text-xs">
+          <div class="flex justify-between">
+            <span class="text-coffee-500">No. Pesanan</span>
+            <span id="receipt-order-id" class="font-bold text-coffee-900">#ORD-001</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-coffee-500">Waktu</span>
+            <span id="receipt-time" class="text-coffee-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-coffee-500">Pemesan</span>
+            <span id="receipt-customer" class="font-semibold text-coffee-900">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-coffee-500">Layanan</span>
+            <span id="receipt-type" class="px-2 py-0.5 rounded-full bg-sage-100 text-sage-700 font-semibold">-</span>
+          </div>
+          <div id="receipt-note-row" class="flex justify-between pt-1 border-t border-cream-200">
+            <span class="text-coffee-500">Meja / Catatan</span>
+            <span id="receipt-note" class="text-coffee-800 font-medium text-right max-w-[180px]">-</span>
+          </div>
+        </div>
+
+        <!-- Daftar Menu di Struk -->
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-coffee-500 mb-2">Rincian Pesanan</p>
+          <div id="receipt-items-list" class="space-y-2 border-y border-dashed border-cream-300 py-3">
+            <!-- Item struk di-render JS -->
+          </div>
+        </div>
+
+        <!-- Total di Struk -->
+        <div class="space-y-1 text-xs">
+          <div class="flex justify-between text-coffee-600">
+            <span>Subtotal</span>
+            <span id="receipt-subtotal">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-coffee-600">
+            <span>Pajak (10%)</span>
+            <span id="receipt-tax">Rp 0</span>
+          </div>
+          <div class="flex justify-between text-base font-bold text-coffee-900 pt-2">
+            <span>Total Bayar</span>
+            <span id="receipt-total" class="text-gold-600">Rp 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Tutup Struk -->
+      <div class="p-4 bg-cream-100 border-t border-cream-200">
+        <button
+          onclick="closeReceiptModal()"
+          class="w-full py-3 rounded-full bg-coffee-800 text-cream-50 font-semibold text-sm hover:bg-coffee-700 transition-colors"
+        >
+          Selesai &amp; Kembali ke Menu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL LOGIN PEMILIK (PIN PROTECTION) ==================== -->
+  <div id="admin-login-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-coffee-900/60 backdrop-blur-xs">
+    <div class="bg-cream-50 w-full max-w-sm rounded-3xl shadow-2xl p-6 sm:p-8 border border-cream-200 animate-modal relative">
+      <button
+        onclick="closeAdminLoginModal()"
+        class="absolute top-5 right-5 p-2 rounded-full hover:bg-cream-200 text-coffee-700 transition-colors"
+        aria-label="Tutup Login"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="text-center space-y-2 mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-coffee-800 text-gold-400 flex items-center justify-center mx-auto mb-3 shadow-sm">
+          <i data-lucide="key-round" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-serif-display text-2xl font-bold text-coffee-900">Akses Pemilik Kafe</h3>
+        <p class="text-xs text-coffee-600 leading-relaxed">
+          Masukkan PIN keamanan pemilik untuk mengelola menu, informasi kafe, dan pesanan masuk.
+        </p>
+      </div>
+
+      <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label for="admin-pin-input" class="block text-xs font-semibold text-coffee-700 mb-1.5">PIN Pemilik</label>
+          <input
+            type="password"
+            id="admin-pin-input"
+            maxlength="6"
+            inputmode="numeric"
+            required
+            placeholder="••••••"
+            class="w-full px-4 py-3 rounded-xl bg-white border border-cream-300 text-center text-lg tracking-[0.4em] font-bold text-coffee-900 focus:outline-none focus:border-gold-500"
+          />
+          <p id="admin-login-error" class="hidden text-xs text-red-600 mt-1.5 text-center font-medium">
+            PIN salah. Silakan coba lagi.
+          </p>
+        </div>
+
+        <!-- Petunjuk PIN Default untuk Pengujian -->
+        <div class="p-3 rounded-xl bg-sage-100/80 border border-sage-500/20 text-center">
+          <p class="text-[11px] text-sage-700">
+            Petunjuk PIN Default Pemilik: <strong class="font-bold tracking-wider">123456</strong>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 rounded-full bg-coffee-800 hover:bg-coffee-700 text-cream-50 font-semibold text-sm transition-all shadow-sm"
+        >
+          Masuk ke Dashboard Pemilik
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL DASHBOARD ADMIN / PEMILIK ==================== -->
+  <div id="admin-dashboard-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-2 sm:p-5 bg-coffee-900/70 backdrop-blur-xs">
+    <div class="bg-cream-50 w-full max-w-5xl rounded-3xl shadow-2xl border border-cream-200 overflow-hidden flex flex-col max-h-[92vh] animate-modal">
+      <!-- Top Bar Dashboard -->
+      <div class="px-5 sm:px-8 py-4 bg-coffee-900 text-cream-50 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gold-500 text-coffee-900 flex items-center justify-center font-bold">
+            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-serif-display text-xl sm:text-2xl font-bold leading-none">Dashboard Pemilik</h3>
+            <p class="text-[11px] text-cream-300/80 mt-0.5">Kelola Kafe, Menu &amp; Pesanan Pelanggan</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            onclick="handleResetDefaultData()"
+            class="px-3 py-1.5 rounded-lg bg-coffee-800 hover:bg-red-900/80 text-cream-200 hover:text-white text-xs font-medium border border-coffee-700 transition-colors flex items-center gap-1.5"
+            title="Kembalikan data ke pengaturan awal"
+          >
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Reset Default</span>
+          </button>
+
+          <button
+            onclick="handleAdminLogout()"
+            class="px-3 py-1.5 rounded-lg bg-coffee-800 hover:bg-coffee-700 text-gold-400 text-xs font-medium border border-coffee-700 transition-colors flex items-center gap-1.5"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Keluar Mode</span>
+          </button>
+
+          <button
+            onclick="closeAdminDashboard()"
+            class="p-2 rounded-lg hover:bg-coffee-800 text-cream-200 transition-colors"
+            aria-label="Tutup Dashboard"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigasi Tab Admin -->
+      <div class="px-5 sm:px-8 pt-3 bg-cream-100 border-b border-cream-200 flex gap-2 overflow-x-auto">
+        <button
+          onclick="switchAdminTab('orders')"
+          id="tab-btn-orders"
+          class="admin-tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-coffee-800 text-coffee-900 whitespace-nowrap flex items-center gap-2"
+        >
+          <i data-lucide="receipt" class="w-4 h-4"></i>
+          <span>Pesanan Masuk</span>
+          <span id="admin-pending-count" class="px-2 py-0.5 rounded-full bg-gold-500 text-coffee-900 text-[11px] font-bold">0</span>
+        </button>
+
+        <button
+          onclick="switchAdminTab('menu')"
+          id="tab-btn-menu"
+          class="admin-tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-coffee-500 hover:text-coffee-800 whitespace-nowrap flex items-center gap-2"
+        >
+          <i data-lucide="coffee" class="w-4 h-4"></i>
+          <span>Kelola Menu</span>
+        </button>
+
+        <button
+          onclick="switchAdminTab('info')"
+          id="tab-btn-info"
+          class="admin-tab-btn px-4 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-coffee-500 hover:text-coffee-800 whitespace-nowrap flex items-center gap-2"
+        >
+          <i data-lucide="store" class="w-4 h-4"></i>
+          <span>Info Kafe</span>
+        </button>
+      </div>
+
+      <!-- Konten Tab Admin (Scrollable) -->
+      <div class="flex-1 overflow-y-auto p-5 sm:p-8">
+        <!-- TAB 1: PESANAN MASUK -->
+        <div id="admin-tab-orders" class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2">
+            <div>
+              <h4 class="font-serif-display text-2xl font-bold text-coffee-900">Daftar Pesanan Pelanggan</h4>
+              <p class="text-xs text-coffee-600">Perbarui status pesanan saat sedang disiapkan atau sudah selesai disajikan.</p>
+            </div>
+          </div>
+
+          <div id="admin-orders-list" class="space-y-3">
+            <!-- Daftar pesanan masuk di-render JS -->
+          </div>
+        </div>
+
+        <!-- TAB 2: KELOLA MENU (TAMBAH / EDIT / HAPUS) -->
+        <div id="admin-tab-menu" class="hidden space-y-6">
+          <!-- Form Tambah / Edit Menu -->
+          <div class="bg-cream-100/90 p-5 rounded-2xl border border-cream-200">
+            <div class="flex items-center justify-between mb-4">
+              <h4 id="menu-form-title" class="font-serif-display text-xl font-bold text-coffee-900">
+                + Tambah Menu Baru
+              </h4>
+              <button
+                type="button"
+                id="cancel-edit-menu-btn"
+                onclick="resetMenuForm()"
+                class="hidden text-xs text-coffee-600 hover:text-coffee-900 underline"
+              >
+                Batal Edit
+              </button>
+            </div>
+
+            <form id="admin-menu-form" onsubmit="handleSaveMenuSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5">
+              <input type="hidden" id="edit-menu-id" />
+
+              <div class="lg:col-span-4">
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Nama Menu *</label>
+                <input
+                  type="text"
+                  id="menu-input-name"
+                  required
+                  placeholder="Contoh: Matcha Oat Latte"
+                  class="w-full px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div class="lg:col-span-3">
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Kategori *</label>
+                <select
+                  id="menu-input-category"
+                  required
+                  class="w-full px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                >
+                  <option value="Kopi Spesialti">Kopi Spesialti</option>
+                  <option value="Non-Kopi">Non-Kopi</option>
+                  <option value="Pastry & Makanan">Pastry &amp; Makanan</option>
+                </select>
+              </div>
+
+              <div class="lg:col-span-2">
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Harga (Rp) *</label>
+                <input
+                  type="number"
+                  id="menu-input-price"
+                  min="1000"
+                  step="500"
+                  required
+                  placeholder="32000"
+                  class="w-full px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div class="lg:col-span-3">
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">URL Gambar</label>
+                <input
+                  type="url"
+                  id="menu-input-image"
+                  placeholder="https://images.unsplash.com/..."
+                  class="w-full px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div class="sm:col-span-2 lg:col-span-9">
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Deskripsi Singkat *</label>
+                <input
+                  type="text"
+                  id="menu-input-desc"
+                  required
+                  placeholder="Ceritakan cita rasa dan bahan utama menu ini..."
+                  class="w-full px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div class="sm:col-span-2 lg:col-span-3 flex items-end">
+                <button
+                  type="submit"
+                  id="save-menu-submit-btn"
+                  class="w-full py-2.5 px-4 rounded-xl bg-coffee-800 hover:bg-coffee-700 text-cream-50 font-semibold text-sm transition-colors"
+                >
+                  Simpan Menu
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Daftar Menu Saat Ini untuk Diedit / Dihapus -->
+          <div>
+            <h4 class="font-serif-display text-xl font-bold text-coffee-900 mb-3">Daftar Menu Aktif</h4>
+            <div id="admin-menu-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <!-- Daftar menu di-render JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: EDIT INFORMASI KAFE -->
+        <div id="admin-tab-info" class="hidden max-w-2xl">
+          <div class="bg-cream-100/90 p-6 rounded-2xl border border-cream-200 space-y-4">
+            <div>
+              <h4 class="font-serif-display text-2xl font-bold text-coffee-900">Identitas &amp; Informasi Kafe</h4>
+              <p class="text-xs text-coffee-600 mt-0.5">Perubahan akan langsung tampil di halaman utama pelanggan.</p>
+            </div>
+
+            <form onsubmit="handleSaveCafeInfoSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Nama Kafe</label>
+                <input
+                  type="text"
+                  id="cafe-input-name"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Tagline / Deskripsi Hero</label>
+                <textarea
+                  id="cafe-input-tagline"
+                  rows="3"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                ></textarea>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Alamat Lengkap</label>
+                <input
+                  type="text"
+                  id="cafe-input-address"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-coffee-700 mb-1">Jam Operasional</label>
+                <input
+                  type="text"
+                  id="cafe-input-hours"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl bg-white border border-cream-300 text-sm focus:outline-none focus:border-gold-500"
+                />
+              </div>
+
+              <div class="pt-2">
+                <button
+                  type="submit"
+                  class="px-6 py-3 rounded-full bg-coffee-800 hover:bg-coffee-700 text-cream-50 font-semibold text-sm transition-colors flex items-center gap-2"
+                >
+                  <i data-lucide="save" class="w-4 h-4 text-gold-400"></i>
+                  <span>Simpan Perubahan Informasi</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL KONFIRMASI CUSTOM (PENGGANTI CONFIRM BROWSER) ==================== -->
+  <div id="custom-confirm-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-coffee-900/60 backdrop-blur-xs">
+    <div class="bg-cream-50 w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-cream-200 animate-modal text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+        <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h4 id="confirm-modal-title" class="font-serif-display text-2xl font-bold text-coffee-900">Konfirmasi</h4>
+        <p id="confirm-modal-message" class="text-xs text-coffee-600 mt-1 leading-relaxed">Apakah Anda yakin?</p>
+      </div>
+      <div class="flex items-center gap-3 pt-2">
+        <button
+          onclick="closeCustomConfirm(false)"
+          class="flex-1 py-2.5 rounded-full bg-cream-200 hover:bg-cream-300 text-coffee-800 font-semibold text-xs transition-colors"
+        >
+          Batal
+        </button>
+        <button
+          onclick="closeCustomConfirm(true)"
+          class="flex-1 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition-colors"
+        >
+          Ya, Lanjutkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    /**
+     * KONFIGURASI DEFAULT & KUNCI PENYIMPANAN LOCALSTORAGE
+     */
+    const OWNER_PIN = '123456';
+    const STORAGE_KEYS = {
+      CAFE_INFO: 'senja_seduh_cafe_info_v1',
+      MENU_ITEMS: 'senja_seduh_menu_items_v1',
+      ORDERS: 'senja_seduh_orders_v1',
+      ADMIN_SESSION: 'senja_seduh_admin_logged_in_v1',
+    };
+
+    const DEFAULT_CAFE_INFO = {
+      name: 'Senja & Seduh',
+      tagline:
+        'Menyajikan biji kopi pilihan nusantara yang disangrai perlahan, dipadukan dengan pastri hangat buatan tangan dalam ruang yang tenang dan estetik.',
+      address: 'Jl. Melawai Raya No. 28, Kebayoran Baru, Jakarta Selatan',
+      hours: 'Senin – Minggu: 08.00 – 22.00 WIB',
+    };
+
+    const DEFAULT_MENU_ITEMS = [
+      {
+        id: 'menu-1',
+        name: 'Kopi Susu Gula Aren Senja',
+        category: 'Kopi Spesialti',
+        price: 28000,
+        description: 'Espresso house blend dengan susu segar creamy dan sirup gula aren organik harum.',
+        image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-2',
+        name: 'V60 Manual Brew Gayo Wine',
+        category: 'Kopi Spesialti',
+        price: 34000,
+        description: 'Seduhan manual biji Arabika Aceh Gayo dengan aroma buah beri dan sentuhan manis bersih.',
+        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-3',
+        name: 'Caramel Macchiato Artisan',
+        category: 'Kopi Spesialti',
+        price: 36000,
+        description: 'Perpaduan espresso lembut, microfoam susu hangat, dan saus karamel panggang buatan sendiri.',
+        image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-4',
+        name: 'Uji Matcha Ceremonial Latte',
+        category: 'Non-Kopi',
+        price: 35000,
+        description: 'Bubuk matcha murni asal Kyoto yang dikocok dengan chasen bersama susu segar pilihan.',
+        image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-5',
+        name: 'Artisan Dark Chocolate',
+        category: 'Non-Kopi',
+        price: 32000,
+        description: 'Cokelat hitam 70% asal Bali yang dilelehkan perlahan menjadi minuman hangat nan pekat.',
+        image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-6',
+        name: 'Almond Butter Croissant',
+        category: 'Pastry & Makanan',
+        price: 30000,
+        description: 'Croissant renyah berlapis mentega Prancis dengan isian krim almon panggang yang lembut.',
+        image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-7',
+        name: 'Burnt Basque Cheesecake',
+        category: 'Pastry & Makanan',
+        price: 38000,
+        description: 'Kue keju panggang karamel khas San Sebastian dengan tekstur lumer di bagian tengah.',
+        image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=700&q=80',
+      },
+      {
+        id: 'menu-8',
+        name: 'Truffle Scrambled Egg Brioche',
+        category: 'Pastry & Makanan',
+        price: 45000,
+        description: 'Roti brioche panggang mentega dengan telur orak-arik lembut beraroma minyak truffle.',
+        image: 'https://images.unsplash.com/photo-1525351484163-7529414342d8?auto=format&fit=crop&w=700&q=80',
+      },
+    ];
+
+    const CATEGORIES = ['Semua', 'Kopi Spesialti', 'Non-Kopi', 'Pastry & Makanan'];
+
+    /**
+     * STATE APLIKASI
+     */
+    let cafeInfo = { ...DEFAULT_CAFE_INFO };
+    let menuItems = [];
+    let orders = [];
+    let cart = []; // Format: { menuId, qty }
+    let selectedCategory = 'Semua';
+    let searchQuery = '';
+    let isAdminLoggedIn = false;
+    let confirmCallback = null;
+
+    /**
+     * INISIALISASI SAAT HALAMAN DIMUAT
+     */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStateFromStorage();
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      renderCafeInfo();
+      renderCategoryTabs();
+      renderMenuGrid();
+      renderCart();
+      updateAdminUIState();
+      lucide.createIcons();
+    });
+
+    /**
+     * MEMUAT & MENYIMPAN DATA KE LOCALSTORAGE
+     */
+    function loadStateFromStorage() {
+      try {
+        const savedInfo = localStorage.getItem(STORAGE_KEYS.CAFE_INFO);
+        cafeInfo = savedInfo ? JSON.parse(savedInfo) : { ...DEFAULT_CAFE_INFO };
+
+        const savedMenu = localStorage.getItem(STORAGE_KEYS.MENU_ITEMS);
+        menuItems = savedMenu ? JSON.parse(savedMenu) : [...DEFAULT_MENU_ITEMS];
+
+        const savedOrders = localStorage.getItem(STORAGE_KEYS.ORDERS);
+        orders = savedOrders ? JSON.parse(savedOrders) : [];
+
+        isAdminLoggedIn = sessionStorage.getItem(STORAGE_KEYS.ADMIN_SESSION) === 'true';
+      } catch (error) {
+        console.error('Gagal memuat data dari storage:', error);
+        cafeInfo = { ...DEFAULT_CAFE_INFO };
+        menuItems = [...DEFAULT_MENU_ITEMS];
+        orders = [];
+      }
+    }
+
+    function saveCafeInfoToStorage() {
+      localStorage.setItem(STORAGE_KEYS.CAFE_INFO, JSON.stringify(cafeInfo));
+    }
+
+    function saveMenuToStorage() {
+      localStorage.setItem(STORAGE_KEYS.MENU_ITEMS, JSON.stringify(menuItems));
+    }
+
+    function saveOrdersToStorage() {
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+    }
+
+    /**
+     * FORMATTER RUPIAH
+     */
+    function formatRupiah(amount) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    }
+
+    /**
+     * NOTIFIKASI TOAST ESTETIK
+     */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgClass =
+        type === 'error'
+          ? 'bg-red-800 text-white border-red-600'
+          : 'bg-coffee-900 text-cream-50 border-gold-500/40';
+      const iconName = type === 'error' ? 'alert-circle' : 'check-circle-2';
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl border shadow-xl text-xs sm:text-sm font-medium animate-modal ${bgClass}`;
+      toast.innerHTML = `
+        <i data-lucide="${iconName}" class="w-4 h-4 text-gold-400 shrink-0"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-6px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 2800);
+    }
+
+    /**
+     * RENDER INFORMASI KAFE KE HALAMAN UTAMA
+     */
+    function renderCafeInfo() {
+      document.title = `${cafeInfo.name} — Artisan Coffee & Pastry`;
+      document.getElementById('nav-cafe-name').textContent = cafeInfo.name;
+      document.getElementById('hero-tagline').textContent = cafeInfo.tagline;
+      document.getElementById('hero-open-status').textContent = `Buka • ${cafeInfo.hours}`;
+      document.getElementById('about-cafe-name').textContent = cafeInfo.name;
+      document.getElementById('info-cafe-address').textContent = cafeInfo.address;
+      document.getElementById('info-cafe-hours').textContent = cafeInfo.hours;
+      document.getElementById('footer-cafe-name').textContent = cafeInfo.name;
+      document.getElementById('footer-copy-name').textContent = cafeInfo.name;
+      document.getElementById('receipt-cafe-title').textContent = cafeInfo.name;
+    }
+
+    /**
+     * RENDER TAB KATEGORI & KATALOG MENU
+     */
+    function renderCategoryTabs() {
+      const container = document.getElementById('category-tabs');
+      container.innerHTML = CATEGORIES.map((cat) => {
+        const isActive = cat === selectedCategory;
+        return `
+          <button
+            onclick="selectCategory('${cat}')"
+            class="px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+              isActive
+                ? 'bg-coffee-800 text-cream-50 shadow-sm'
+                : 'bg-cream-50 text-coffee-700 border border-cream-300 hover:bg-cream-200'
+            }"
+          >
+            ${cat}
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      renderCategoryTabs();
+      renderMenuGrid();
+    }
+
+    function handleSearchMenu(value) {
+      searchQuery = value.trim().toLowerCase();
+      renderMenuGrid();
+    }
+
+    function renderMenuGrid() {
+      const grid = document.getElementById('menu-grid');
+      const emptyState = document.getElementById('menu-empty-state');
+
+      const filtered = menuItems.filter((item) => {
+        const matchCategory = selectedCategory === 'Semua' || item.category === selectedCategory;
+        const matchSearch =
+          !searchQuery ||
+          item.name.toLowerCase().includes(searchQuery) ||
+          item.description.toLowerCase().includes(searchQuery);
+        return matchCategory && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered
+        .map((item) => {
+          const inCart = cart.find((c) => c.menuId === item.id);
+          const qty = inCart ? inCart.qty : 0;
+
+          return `
+            <article class="group bg-cream-50 rounded-3xl overflow-hidden border border-cream-200 shadow-card hover:shadow-soft transition-all duration-300 flex flex-col">
+              <!-- Foto Menu -->
+              <div class="relative aspect-[16/11] bg-cream-200 overflow-hidden">
+                <img
+                  src="${item.image || 'https://placehold.co/600x400/EDE3D3/4E3424?text=Senja+%26+Seduh'}"
+                  alt="${item.name}"
+                  onerror="this.src='https://placehold.co/600x400/EDE3D3/4E3424?text=Menu+Kafe'"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-cream-50/90 backdrop-blur-xs text-[11px] font-semibold text-coffee-800 border border-cream-200">
+                  ${item.category}
+                </span>
+              </div>
+
+              <!-- Detail Menu -->
+              <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div>
+                  <h3 class="font-serif-display text-2xl font-bold text-coffee-900 leading-snug group-hover:text-coffee-700 transition-colors">
+                    ${item.name}
+                  </h3>
+                  <p class="text-xs text-coffee-700/80 mt-1.5 leading-relaxed line-clamp-2">
+                    ${item.description}
+                  </p>
+                </div>
+
+                <!-- Harga & Kontrol Tambah ke Keranjang -->
+                <div class="pt-3 border-t border-cream-200/80 flex items-center justify-between gap-2">
+                  <span class="font-bold text-base text-coffee-900">
+                    ${formatRupiah(item.price)}
+                  </span>
+
+                  ${
+                    qty === 0
+                      ? `
+                        <button
+                          onclick="addToCart('${item.id}')"
+                          class="px-4 py-2 rounded-full bg-coffee-800 hover:bg-coffee-700 text-cream-50 text-xs font-semibold transition-all flex items-center gap-1.5 active:scale-95"
+                        >
+                          <i data-lucide="plus" class="w-3.5 h-3.5 text-gold-400"></i>
+                          <span>Tambah</span>
+                        </button>
+                      `
+                      : `
+                        <div class="flex items-center gap-2 bg-cream-100 border border-cream-300 rounded-full p-1">
+                          <button
+                            onclick="updateCartQty('${item.id}', -1)"
+                            class="w-7 h-7 rounded-full bg-white hover:bg-cream-200 text-coffee-800 flex items-center justify-center transition-colors"
+                            aria-label="Kurangi jumlah"
+                          >
+                            <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+                          </button>
+                          <span class="text-xs font-bold text-coffee-900 min-w-[20px] text-center">${qty}</span>
+                          <button
+                            onclick="updateCartQty('${item.id}', 1)"
+                            class="w-7 h-7 rounded-full bg-coffee-800 hover:bg-coffee-700 text-cream-50 flex items-center justify-center transition-colors"
+                            aria-label="Tambah jumlah"
+                          >
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                          </button>
+                        </div>
+                      `
+                  }
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+
+      lucide.createIcons();
+    }
+
+    /**
+     * LOGIKA KERANJANG BELANJA (CART)
+     */
+    function addToCart(menuId) {
+      const existing = cart.find((item) => item.menuId === menuId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ menuId, qty: 1 });
+      }
+      const menu = menuItems.find((m) => m.id === menuId);
+      showToast(`${menu ? menu.name : 'Menu'} ditambahkan ke keranjang`);
+      renderMenuGrid();
+      renderCart();
+    }
+
+    function updateCartQty(menuId, delta) {
+      const index = cart.findIndex((item) => item.menuId === menuId);
+      if (index === -1) return;
+
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      renderMenuGrid();
+      renderCart();
+    }
+
+    function toggleCartDrawer(open) {
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } else {
+        backdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function toggleTableField(isDineIn) {
+      const label = document.getElementById('customer-note-label');
+      const input = document.getElementById('customer-note');
+      if (isDineIn) {
+        label.textContent = 'Nomor Meja & Catatan';
+        input.placeholder = 'Contoh: Meja 04 • Es sedikit';
+      } else {
+        label.textContent = 'Catatan Pesanan (Opsional)';
+        input.placeholder = 'Contoh: Tanpa sedotan plastik, gula terpisah';
+      }
+    }
+
+    function renderCart() {
+      const badge = document.getElementById('cart-count-badge');
+      const container = document.getElementById('cart-items-container');
+      const form = document.getElementById('checkout-form');
+      const footer = document.getElementById('cart-footer');
+
+      // Bersihkan item yang mungkin sudah dihapus pemilik dari daftar menu
+      cart = cart.filter((c) => menuItems.some((m) => m.id === c.menuId));
+
+      const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      badge.textContent = totalItems;
+
+      if (cart.length === 0) {
+        form.classList.add('hidden');
+        footer.classList.add('hidden');
+        container.innerHTML = `
+          <div class="text-center py-12 px-4 bg-cream-100/70 rounded-3xl border border-cream-200">
+            <div class="w-14 h-14 rounded-full bg-cream-200/80 text-coffee-500 flex items-center justify-center mx-auto mb-3">
+              <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-serif-display text-xl font-bold text-coffee-900">Keranjang Masih Kosong</h4>
+            <p class="text-xs text-coffee-600 mt-1 max-w-xs mx-auto">
+              Jelajahi pilihan kopi spesialti dan pastri hangat kami untuk mulai memesan.
+            </p>
+            <button
+              onclick="toggleCartDrawer(false)"
+              class="mt-4 px-5 py-2 rounded-full bg-coffee-800 text-cream-50 text-xs font-semibold hover:bg-coffee-700 transition-colors"
+            >
+              Lihat Daftar Menu
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      form.classList.remove('hidden');
+      footer.classList.remove('hidden');
+
+      let subtotal = 0;
+
+      container.innerHTML = cart
+        .map((c) => {
+          const menu = menuItems.find((m) => m.id === c.menuId);
+          const itemTotal = menu.price * c.qty;
+          subtotal += itemTotal;
+
+          return `
+            <div class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-cream-200 shadow-2xs">
+              <img
+                src="${menu.image || 'https://placehold.co/100x100/EDE3D3/4E3424?text=Menu'}"
+                alt="${menu.name}"
+                onerror="this.src='https://placehold.co/100x100/EDE3D3/4E3424?text=Menu'"
+                class="w-14 h-14 rounded-xl object-cover shrink-0 bg-cream-100"
+              />
+              <div class="flex-1 min-w-0">
+                <h5 class="text-xs sm:text-sm font-bold text-coffee-900 truncate">${menu.name}</h5>
+                <p class="text-xs text-gold-600 font-semibold mt-0.5">${formatRupiah(itemTotal)}</p>
+              </div>
+              <div class="flex items-center gap-1.5 bg-cream-100 rounded-full p-1 border border-cream-200">
+                <button
+                  type="button"
+                  onclick="updateCartQty('${menu.id}', -1)"
+                  class="w-6 h-6 rounded-full bg-white text-coffee-800 flex items-center justify-center hover:bg-cream-200"
+                >
+                  <i data-lucide="minus" class="w-3 h-3"></i>
+                </button>
+                <span class="text-xs font-bold min-w-[16px] text-center">${c.qty}</span>
+                <button
+                  type="button"
+                  onclick="updateCartQty('${menu.id}', 1)"
+                  class="w-6 h-6 rounded-full bg-coffee-800 text-cream-50 flex items-center justify-center hover:bg-coffee-700"
+                >
+                  <i data-lucide="plus" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      const tax = Math.round(subtotal * 0.1);
+      const total = subtotal + tax;
+
+      document.getElementById('cart-subtotal').textContent = formatRupiah(subtotal);
+      document.getElementById('cart-tax').textContent = formatRupiah(tax);
+      document.getElementById('cart-total').textContent = formatRupiah(total);
+
+      lucide.createIcons();
+    }
+
+    /**
+     * CHECKOUT & STRUK PESANAN
+     */
+    function handleCheckoutSubmit(event) {
+      event.preventDefault();
+      if (cart.length === 0) return;
+
+      const customerName = document.getElementById('customer-name').value.trim();
+      const customerNote = document.getElementById('customer-note').value.trim();
+      const orderTypeInput = document.querySelector('input[name="orderType"]:checked');
+      const orderType = orderTypeInput ? orderTypeInput.value : 'Dine-in';
+
+      if (!customerName) {
+        showToast('Mohon isi nama pemesan terlebih dahulu', 'error');
+        return;
+      }
+
+      let subtotal = 0;
+      const orderedItems = cart.map((c) => {
+        const menu = menuItems.find((m) => m.id === c.menuId);
+        const lineTotal = menu.price * c.qty;
+        subtotal += lineTotal;
+        return {
+          name: menu.name,
+          price: menu.price,
+          qty: c.qty,
+          lineTotal,
+        };
+      });
+
+      const tax = Math.round(subtotal * 0.1);
+      const total = subtotal + tax;
+
+      const now = new Date();
+      const timeFormatted = now.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }) + ' WIB';
+
+      const newOrder = {
+        id: 'ORD-' + String(Math.floor(1000 + Math.random() * 9000)),
+        customerName,
+        orderType,
+        note: customerNote || (orderType === 'Dine-in' ? 'Meja reguler' : 'Takeaway'),
+        items: orderedItems,
+        subtotal,
+        tax,
+        total,
+        status: 'Menunggu', // Menunggu -> Diproses -> Selesai
+        createdAt: timeFormatted,
+      };
+
+      // Simpan ke riwayat pesanan masuk
+      orders.unshift(newOrder);
+      saveOrdersToStorage();
+
+      // Kosongkan keranjang & reset form
+      cart = [];
+      document.getElementById('checkout-form').reset();
+      toggleTableField(true);
+      renderMenuGrid();
+      renderCart();
+      toggleCartDrawer(false);
+      updateAdminUIState();
+
+      // Tampilkan modal struk pesanan
+      openReceiptModal(newOrder);
+    }
+
+    function openReceiptModal(order) {
+      document.getElementById('receipt-order-id').textContent = `#${order.id}`;
+      document.getElementById('receipt-time').textContent = order.createdAt;
+      document.getElementById('receipt-customer').textContent = order.customerName;
+      document.getElementById('receipt-type').textContent = order.orderType;
+      document.getElementById('receipt-note').textContent = order.note;
+
+      document.getElementById('receipt-items-list').innerHTML = order.items
+        .map(
+          (item) => `
+          <div class="flex justify-between text-xs">
+            <span class="text-coffee-800">
+              <strong class="font-semibold">${item.qty}x</strong> ${item.name}
+            </span>
+            <span class="font-medium text-coffee-900">${formatRupiah(item.lineTotal)}</span>
+          </div>
+        `
+        )
+        .join('');
+
+      document.getElementById('receipt-subtotal').textContent = formatRupiah(order.subtotal);
+      document.getElementById('receipt-tax').textContent = formatRupiah(order.tax);
+      document.getElementById('receipt-total').textContent = formatRupiah(order.total);
+
+      const modal = document.getElementById('receipt-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeReceiptModal() {
+      const modal = document.getElementById('receipt-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    /**
+     * ==================== SISTEM MODE PEMILIK / ADMIN PANEL ====================
+     */
+    function handleAdminAccessClick() {
+      if (isAdminLoggedIn) {
+        openAdminDashboard();
+      } else {
+        openAdminLoginModal();
+      }
+    }
+
+    function openAdminLoginModal() {
+      const modal = document.getElementById('admin-login-modal');
+      const input = document.getElementById('admin-pin-input');
+      const errorText = document.getElementById('admin-login-error');
+      input.value = '';
+      errorText.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => input.focus(), 100);
+      lucide.createIcons();
+    }
+
+    function closeAdminLoginModal() {
+      const modal = document.getElementById('admin-login-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleAdminLoginSubmit(event) {
+      event.preventDefault();
+      const inputVal = document.getElementById('admin-pin-input').value.trim();
+      const errorText = document.getElementById('admin-login-error');
+
+      if (inputVal === OWNER_PIN) {
+        isAdminLoggedIn = true;
+        sessionStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, 'true');
+        closeAdminLoginModal();
+        updateAdminUIState();
+        openAdminDashboard();
+        showToast('Berhasil masuk ke Mode Pemilik');
+      } else {
+        errorText.classList.remove('hidden');
+        document.getElementById('admin-pin-input').value = '';
+        document.getElementById('admin-pin-input').focus();
+      }
+    }
+
+    function handleAdminLogout() {
+      isAdminLoggedIn = false;
+      sessionStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+      closeAdminDashboard();
+      updateAdminUIState();
+      showToast('Keluar dari Mode Pemilik');
+    }
+
+    function updateAdminUIState() {
+      const badgeBtn = document.getElementById('admin-badge-btn');
+      if (isAdminLoggedIn) {
+        badgeBtn.classList.remove('hidden');
+        badgeBtn.classList.add('inline-flex');
+      } else {
+        badgeBtn.classList.add('hidden');
+        badgeBtn.classList.remove('inline-flex');
+      }
+
+      // Hitung pesanan yang belum selesai
+      const activeOrders = orders.filter((o) => o.status !== 'Selesai').length;
+      const pendingBadge = document.getElementById('admin-pending-count');
+      if (pendingBadge) {
+        pendingBadge.textContent = activeOrders;
+      }
+    }
+
+    function openAdminDashboard() {
+      if (!isAdminLoggedIn) {
+        openAdminLoginModal();
+        return;
+      }
+      populateCafeInfoForm();
+      renderAdminOrders();
+      renderAdminMenuList();
+      updateAdminUIState();
+
+      const modal = document.getElementById('admin-dashboard-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeAdminDashboard() {
+      const modal = document.getElementById('admin-dashboard-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function switchAdminTab(tabName) {
+      const tabs = ['orders', 'menu', 'info'];
+      tabs.forEach((t) => {
+        const panel = document.getElementById(`admin-tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabName) {
+          panel.classList.remove('hidden');
+          btn.classList.add('border-coffee-800', 'text-coffee-900');
+          btn.classList.remove('border-transparent', 'text-coffee-500');
+        } else {
+          panel.classList.add('hidden');
+          btn.classList.remove('border-coffee-800', 'text-coffee-900');
+          btn.classList.add('border-transparent', 'text-coffee-500');
+        }
+      });
+      lucide.createIcons();
+    }
+
+    /**
+     * ADMIN TAB 1: KELOLA PESANAN MASUK
+     */
+    function renderAdminOrders() {
+      const container = document.getElementById('admin-orders-list');
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-cream-100/70 rounded-2xl border border-cream-200">
+            <i data-lucide="inbox" class="w-10 h-10 text-coffee-400 mx-auto mb-2"></i>
+            <p class="font-serif-display text-xl font-bold text-coffee-900">Belum Ada Pesanan Masuk</p>
+            <p class="text-xs text-coffee-600 mt-1">Pesanan pelanggan yang melakukan checkout akan muncul di sini.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = orders
+        .map((order) => {
+          let statusBadgeClass = 'bg-amber-100 text-amber-800 border-amber-300';
+          if (order.status === 'Diproses') {
+            statusBadgeClass = 'bg-blue-100 text-blue-800 border-blue-300';
+          } else if (order.status === 'Selesai') {
+            statusBadgeClass = 'bg-sage-100 text-sage-700 border-sage-500/30';
+          }
+
+          return `
+            <div class="p-4 sm:p-5 rounded-2xl bg-white border border-cream-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="space-y-2 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-bold text-sm text-coffee-900">#${order.id}</span>
+                  <span class="text-xs text-coffee-500">• ${order.createdAt}</span>
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${statusBadgeClass}">
+                    ${order.status}
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-cream-100 text-coffee-700 text-[11px] font-medium">
+                    ${order.orderType}
+                  </span>
+                </div>
+
+                <div>
+                  <p class="text-sm font-semibold text-coffee-900">
+                    ${order.customerName}
+                    <span class="font-normal text-xs text-coffee-600">(${order.note})</span>
+                  </p>
+                  <p class="text-xs text-coffee-700 mt-1">
+                    ${order.items.map((i) => `${i.qty}x ${i.name}`).join(', ')}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between md:justify-end gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-cream-200">
+                <span class="font-bold text-sm text-gold-600 mr-2">${formatRupiah(order.total)}</span>
+
+                <button
+                  onclick="updateOrderStatus('${order.id}', 'Diproses')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
+                    order.status === 'Diproses'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-cream-50 hover:bg-blue-50 text-coffee-800 border-cream-300'
+                  }"
+                >
+                  Diproses
+                </button>
+
+                <button
+                  onclick="updateOrderStatus('${order.id}', 'Selesai')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
+                    order.status === 'Selesai'
+                      ? 'bg-sage-700 text-white border-sage-700'
+                      : 'bg-cream-50 hover:bg-sage-100 text-coffee-800 border-cream-300'
+                  }"
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+
+      lucide.createIcons();
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = orders.find((o) => o.id === orderId);
+      if (!order) return;
+      order.status = newStatus;
+      saveOrdersToStorage();
+      renderAdminOrders();
+      updateAdminUIState();
+      showToast(`Status pesanan #${orderId} diubah menjadi "${newStatus}"`);
+    }
+
+    /**
+     * ADMIN TAB 2: KELOLA MENU (TAMBAH, EDIT, HAPUS)
+     */
+    function renderAdminMenuList() {
+      const container = document.getElementById('admin-menu-list');
+      container.innerHTML = menuItems
+        .map(
+          (item) => `
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-white border border-cream-200">
+            <img
+              src="${item.image || 'https://placehold.co/100x100/EDE3D3/4E3424?text=Menu'}"
+              alt="${item.name}"
+              onerror="this.src='https://placehold.co/100x100/EDE3D3/4E3424?text=Menu'"
+              class="w-16 h-16 rounded-xl object-cover shrink-0 bg-cream-100"
+            />
+            <div class="flex-1 min-w-0">
+              <span class="text-[10px] uppercase tracking-wider font-semibold text-sage-700">${item.category}</span>
+              <h5 class="text-sm font-bold text-coffee-900 truncate">${item.name}</h5>
+              <p class="text-xs font-semibold text-gold-600">${formatRupiah(item.price)}</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button
+                onclick="startEditMenu('${item.id}')"
+                class="p-2 rounded-xl bg-cream-100 hover:bg-gold-400/30 text-coffee-800 transition-colors"
+                title="Edit Menu"
+              >
+                <i data-lucide="pencil" class="w-4 h-4"></i>
+              </button>
+              <button
+                onclick="confirmDeleteMenu('${item.id}')"
+                class="p-2 rounded-xl bg-cream-100 hover:bg-red-100 text-red-600 transition-colors"
+                title="Hapus Menu"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `
+        )
+        .join('');
+
+      lucide.createIcons();
+    }
+
+    function handleSaveMenuSubmit(event) {
+      event.preventDefault();
+      const editId = document.getElementById('edit-menu-id').value;
+      const name = document.getElementById('menu-input-name').value.trim();
+      const category = document.getElementById('menu-input-category').value;
+      const price = parseInt(document.getElementById('menu-input-price').value, 10);
+      const image =
+        document.getElementById('menu-input-image').value.trim() ||
+        'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80';
+      const description = document.getElementById('menu-input-desc').value.trim();
+
+      if (editId) {
+        // Update menu yang ada
+        const index = menuItems.findIndex((m) => m.id === editId);
+        if (index !== -1) {
+          menuItems[index] = { id: editId, name, category, price, image, description };
+          showToast(`Menu "${name}" berhasil diperbarui`);
+        }
+      } else {
+        // Tambah menu baru
+        const newMenu = {
+          id: 'menu-' + Date.now(),
+          name,
+          category,
+          price,
+          image,
+          description,
+        };
+        menuItems.unshift(newMenu);
+        showToast(`Menu baru "${name}" berhasil ditambahkan`);
+      }
+
+      saveMenuToStorage();
+      resetMenuForm();
+      renderAdminMenuList();
+      renderMenuGrid();
+      renderCart();
+    }
+
+    function startEditMenu(menuId) {
+      const item = menuItems.find((m) => m.id === menuId);
+      if (!item) return;
+
+      document.getElementById('edit-menu-id').value = item.id;
+      document.getElementById('menu-input-name').value = item.name;
+      document.getElementById('menu-input-category').value = item.category;
+      document.getElementById('menu-input-price').value = item.price;
+      document.getElementById('menu-input-image').value = item.image;
+      document.getElementById('menu-input-desc').value = item.description;
+
+      document.getElementById('menu-form-title').textContent = `Edit Menu: ${item.name}`;
+      document.getElementById('save-menu-submit-btn').textContent = 'Update Menu';
+      document.getElementById('cancel-edit-menu-btn').classList.remove('hidden');
+
+      document.getElementById('menu-input-name').focus();
+    }
+
+    function resetMenuForm() {
+      document.getElementById('admin-menu-form').reset();
+      document.getElementById('edit-menu-id').value = '';
+      document.getElementById('menu-form-title').textContent = '+ Tambah Menu Baru';
+      document.getElementById('save-menu-submit-btn').textContent = 'Simpan Menu';
+      document.getElementById('cancel-edit-menu-btn').classList.add('hidden');
+    }
+
+    function confirmDeleteMenu(menuId) {
+      const item = menuItems.find((m) => m.id === menuId);
+      if (!item) return;
+
+      openCustomConfirm(
+        'Hapus Menu?',
+        `Menu "${item.name}" akan dihapus dari katalog pelanggan.`,
+        () => {
+          menuItems = menuItems.filter((m) => m.id !== menuId);
+          saveMenuToStorage();
+          renderAdminMenuList();
+          renderMenuGrid();
+          renderCart();
+          showToast(`Menu "${item.name}" telah dihapus`);
+        }
+      );
+    }
+
+    /**
+     * ADMIN TAB 3: EDIT INFORMASI KAFE
+     */
+    function populateCafeInfoForm() {
+      document.getElementById('cafe-input-name').value = cafeInfo.name;
+      document.getElementById('cafe-input-tagline').value = cafeInfo.tagline;
+      document.getElementById('cafe-input-address').value = cafeInfo.address;
+      document.getElementById('cafe-input-hours').value = cafeInfo.hours;
+    }
+
+    function handleSaveCafeInfoSubmit(event) {
+      event.preventDefault();
+      cafeInfo = {
+        name: document.getElementById('cafe-input-name').value.trim(),
+        tagline: document.getElementById('cafe-input-tagline').value.trim(),
+        address: document.getElementById('cafe-input-address').value.trim(),
+        hours: document.getElementById('cafe-input-hours').value.trim(),
+      };
+      saveCafeInfoToStorage();
+      renderCafeInfo();
+      showToast('Informasi kafe berhasil diperbarui');
+    }
+
+    /**
+     * RESET DATA DEFAULT
+     */
+    function handleResetDefaultData() {
+      openCustomConfirm(
+        'Reset Data ke Default?',
+        'Semua perubahan menu, info kafe, dan riwayat pesanan akan dikembalikan ke pengaturan awal.',
+        () => {
+          cafeInfo = { ...DEFAULT_CAFE_INFO };
+          menuItems = [...DEFAULT_MENU_ITEMS];
+          orders = [];
+          cart = [];
+
+          saveCafeInfoToStorage();
+          saveMenuToStorage();
+          saveOrdersToStorage();
+
+          renderCafeInfo();
+          renderMenuGrid();
+          renderCart();
+          populateCafeInfoForm();
+          renderAdminOrders();
+          renderAdminMenuList();
+          updateAdminUIState();
+          showToast('Data berhasil dikembalikan ke default');
+        }
+      );
+    }
+
+    /**
+     * MODAL KONFIRMASI CUSTOM (PENGGANTI WINDOW.CONFIRM)
+     */
+    function openCustomConfirm(title, message, onConfirm) {
+      document.getElementById('confirm-modal-title').textContent = title;
+      document.getElementById('confirm-modal-message').textContent = message;
+      confirmCallback = onConfirm;
+
+      const modal = document.getElementById('custom-confirm-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeCustomConfirm(confirmed) {
+      const modal = document.getElementById('custom-confirm-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+
+      if (confirmed && typeof confirmCallback === 'function') {
+        confirmCallback();
+      }
+      confirmCallback = null;
+    }
+  </script>
+</body>
+</html>
